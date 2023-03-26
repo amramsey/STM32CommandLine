@@ -2,6 +2,30 @@
 #include <string.h>
 
 
+union endian_node
+{
+    unsigned int m;
+    char c;
+};
+
+int big_little_endian_check(void)
+{
+    union endian_node data;
+    int rtn;
+
+    data.m = 0X12345678;
+    //printf("0x%02x \n", data.c);
+    if (0X78 == data.c) {
+        //printf("Little-Endian \n");
+        rtn = 0;
+    } else if (0X12 == data.c) {
+        //printf("Big-Endian \n");
+        rtn = 1;
+    }
+
+    return rtn;
+}
+
 
 /**
   * @brief  判断字符串是否是全数字
@@ -138,6 +162,85 @@ int my_str_to_hex(char *str, unsigned char *out, unsigned int *outlen)
     
     if(outlen != 0) *outlen = tmplen / 2 + tmplen % 2;
     return tmplen / 2 + tmplen % 2;
+}
+
+
+/**
+* 此函数可以将所有小写字母转换为大写字母。
+*/
+void my_str_to_upper(char* str)
+{
+    char* curr = str;
+
+    //若字符串未结束
+    while(*curr != '\0') {
+        //判别是否为字母 isalpha ()
+        //判别是否为小写 islower() 
+        // 以上均为ctype.h提供的函数
+        if(isalpha(*curr) && islower(*curr)) {
+            //修改字母
+            *curr = toupper(*curr);
+        }
+        //移动指针，判别下一个字母
+        curr++;
+    }
+}
+
+
+/**
+* 此函数可以将所有大写字母转换为小写字母。
+*/
+void my_str_to_lower(char* str)
+{
+    char* curr = str;
+
+    while(*curr != '\0') {
+        //isupper() 判断字母是否为大写
+        if(isalpha(*curr)&&isupper(*curr)) {
+            *curr=tolower(*curr);
+        }
+        curr++;
+    }
+}
+
+
+/**
+* 此函数可以将一个大写字母转换为小写字母。
+*/
+char my_tolower(char c)
+{
+    if (c >= 'A' && c <= 'Z') {
+        return c + 'a' - 'A';
+    } else {
+        return c;
+    }
+}
+
+
+/**
+  * @brief  将十六进制字符串转化成整数
+  * @param  str 要转化的字符串
+  * @retval 整数
+  */
+int my_htoi(char s[])
+{
+    int i;
+    int n = 0;
+
+    if (s[0] == '0' && (s[1]=='x' || s[1]=='X')) {
+        i = 2;
+    } else {
+        i = 0;
+    }
+
+    for (; (s[i] >= '0' && s[i] <= '9') || (s[i] >= 'a' && s[i] <= 'z') || (s[i] >='A' && s[i] <= 'Z');++i) {
+        if (my_tolower(s[i]) > '9') {
+            n = 16 * n + (10 + my_tolower(s[i]) - 'a');
+        } else {
+            n = 16 * n + (my_tolower(s[i]) - '0');
+        }
+    }
+    return n;
 }
 
 
